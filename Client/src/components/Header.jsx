@@ -32,7 +32,7 @@ const Header = () => {
         </Button>
         <div className="flex gap-4 md:order-2">
         <Button className="w-12 h-10 hidden sm:inline"><FaMoon /></Button>
-        <Link to="/signin"><Button gradientDuoTone={"purpleToBlue"}>Sign In</Button></Link>
+        <Link to="/signin"><Button gradientDuoTone={"purpleToBlue"} outline>Sign In</Button></Link>
         <Navbar.Toggle />
         </div>
         <Navbar.Collapse>
