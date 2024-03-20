@@ -5,6 +5,7 @@ import { useState } from "react";
 import axios from "axios";
 import { loginStart, loginSuccess, loginFailure } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 
 
 function SignIn() {
@@ -99,6 +100,7 @@ function SignIn() {
              
               </Button>
             </div>
+            <OAuth/>
             <div className="text-sm mt-4">
               <span>
                 Dont have an account?

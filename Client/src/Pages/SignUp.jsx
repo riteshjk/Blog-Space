@@ -1,30 +1,30 @@
-import React from "react";
-import { Link,useNavigate} from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
-import { useState } from "react";
 import axios from "axios";
-
+import OAuth from "../components/OAuth";
 
 function SignUp() {
   const [formData, setFormData] = useState({});
   const [errMessage, setErrMessage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
-  const handleChange =(e) =>{
-    setFormData({...formData,[e.target.id]:e.target.value})
-  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrMessage(null);
+
     if (!formData.username || !formData.email || !formData.password) {
       setErrMessage("Please fill all the fields");
       setLoading(false);
-      return; // exit the function early if form data is incomplete
+      return;
     }
-    
+
     try {
       const response = await axios.post(
         "http://localhost:3000/api/auth/signup",
@@ -35,12 +35,12 @@ function SignUp() {
           },
         }
       );
+
       console.log(response);
       setFormData({});
       setLoading(false);
-      
+
       if (response.status === 200) {
-        // Redirect to sign-in page
         navigate("/signin");
       } else {
         setErrMessage("Signup was not successful. Please try again.");
@@ -50,8 +50,8 @@ function SignUp() {
       setErrMessage("An error occurred while signing up. Please try again later.");
       setLoading(false);
     }
-  
   };
+
   return (
     <div className="min-h-screen mt-20">
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center">
@@ -63,8 +63,7 @@ function SignUp() {
             Blog
           </Link>
           <p className="text-sm mt-5">
-            This is the demo project you can Sing up with your email and
-            Password or with Google
+            This is the demo project you can Sing up with your email and Password or with Google
           </p>
         </div>
         <form className="flex flex-col gap-4 flex-1" onSubmit={handleSubmit}>
@@ -75,11 +74,11 @@ function SignUp() {
             </div>
             <div>
               <Label value="Your Email" />
-              <TextInput type="email" placeholder="Email" id="email" onChange={handleChange}/>
+              <TextInput type="email" placeholder="Email" id="email" onChange={handleChange} />
             </div>
             <div>
               <Label value="Your Password" />
-              <TextInput type="password" placeholder="Password" id="password" onChange={handleChange}/>
+              <TextInput type="password" placeholder="Password" id="password" onChange={handleChange} />
             </div>
             <div>
               <Button
@@ -88,17 +87,18 @@ function SignUp() {
                 gradientDuoTone={"purpleToPink"}
                 disabled={loading}
               >
-                {
-                  loading ? (
-                    <>
-                    <Spinner size="sm"/>
+                {loading ? (
+                  <>
+                    <Spinner size="sm" />
                     <span className="pl-3">Loading...</span>
-                    </>
-                  ) : "Sign Up"
-                }
-             
+                  </>
+                ) : (
+                  "Sign Up"
+                )}
               </Button>
+              <OAuth/>
             </div>
+
             <div className="text-sm mt-4">
               <span>
                 Already have an account?
@@ -107,15 +107,11 @@ function SignUp() {
                 </Link>
               </span>
             </div>
-            {
-        errMessage && <Alert className="mt-5" color={"failure"}>{errMessage}</Alert>
-      }
+            {errMessage && <Alert className="mt-5" color={"failure"}>{errMessage}</Alert>}
           </div>
         </form>
       </div>
-     
     </div>
-   
   );
 }
 
