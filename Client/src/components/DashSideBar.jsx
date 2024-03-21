@@ -1,12 +1,10 @@
 import { Sidebar } from 'flowbite-react'
 import React from 'react'
 import { HiUser,HiArrowSmRight } from 'react-icons/hi';
-import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect,useState } from 'react';
 
 const DashSideBar = () => {
-    const {theme} = useSelector((state) => state.theme)
     const [tab,setTab] = useState("");
     const location = useLocation();
 
@@ -18,15 +16,15 @@ const DashSideBar = () => {
         }
     },[location.search])
   return (
-  <Sidebar className="w-full md:w-60">
+  <Sidebar className="w-full md:w-56">
     <Sidebar.Items >
         <Sidebar.ItemGroup >
             <Link to="/dashboard?tab=profile">
-            <Sidebar.Item  active={tab=="profile"} icon={HiUser} label={"User"}> 
+            <Sidebar.Item  active={tab=="profile"} icon={HiUser} label={"User"} as="div"> 
                Profile
             </Sidebar.Item>
             </Link>
-            <Sidebar.Item active icon={HiArrowSmRight} className="cursor-pointer"> 
+            <Sidebar.Item active icon={HiArrowSmRight} className="cursor-pointer" as="div"> 
                Sign Out
             </Sidebar.Item>
         </Sidebar.ItemGroup>
