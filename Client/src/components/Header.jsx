@@ -11,7 +11,7 @@ const Header = () => {
     const {currentUser} = useSelector((store) => store.user);
     const {theme} = useSelector((store) => store.theme);
     const dispatch = useDispatch();
-     console.log(currentUser,"hi")
+    //  console.log(currentUser,"hi")
   return (
     <div>
       <Navbar className="border-b-2">
@@ -42,11 +42,11 @@ const Header = () => {
           </Button>
         {
           currentUser ? (
-            <Dropdown arrowIcon={false} inline label={<Avatar img={currentUser.userPresent.profilePic} rounded/>}>
+            <Dropdown arrowIcon={false} inline label={<Avatar img={currentUser?.userPresent?.profilePic} rounded/>}>
 
                 <Dropdown.Header>
-                  <span className="block text-sm">@{currentUser.userPresent.username}</span>
-                  <span className="block text-sm font-medium truncate">@{currentUser.userPresent.email}</span>
+                  <span className="block text-sm">@{currentUser?.userPresent?.username}</span>
+                  <span className="block text-sm font-medium truncate">@{currentUser?.userPresent?.email}</span>
                 </Dropdown.Header>
                 
                   <Link to="/dashboard?tab=profile">
