@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 
 
  const DashProfile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser,loading, error } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUplaodProgress] = useState(null);
@@ -23,6 +23,9 @@ import { useDispatch } from "react-redux";
   const filePickerRef = useRef();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
+
+  // const {currentUser} = useSelector((state) => state.user);
+  // console.log(currentUser,"ritesh")
 
 //   console.log("====================================");
   const handleImageChange = (e) => {
@@ -92,11 +95,13 @@ import { useDispatch } from "react-redux";
     
      if (Object.keys(formData).length === 0) {
        return;
-     }
+     }  
+
+     
   
      try {
        dispatch(updateStart());
-      const res = await fetch(`/api/users/update/${currentUser._id}`, {
+      const res = await fetch(`/api/users/update/${currentUser.userPresent._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -105,6 +110,7 @@ import { useDispatch } from "react-redux";
       });
 
        const data = await res.json();
+       console.log(data,"ritesh")
       
        if (!res.ok) {
         
@@ -119,10 +125,6 @@ import { useDispatch } from "react-redux";
       dispatch(updateFailure(error.message));
     }
   };
-
- 
-
- 
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
