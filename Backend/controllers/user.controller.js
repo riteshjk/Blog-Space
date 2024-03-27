@@ -6,6 +6,7 @@ export const test =(req,res) =>{
     res.send("test")
 }
 
+
 export const update= async(req,res,next) =>{
     // console.log(req.user)
     if(req.user.id != req.params.id){
@@ -19,7 +20,7 @@ export const update= async(req,res,next) =>{
         req.body.password = bcryptjs.hashSync(req.body.password, 10)
     }
     if(req.body.username){
-        if(req.body.username.length< 4 || req.body.username.length > 9){
+        if(req.body.username.length< 7 || req.body.username.length > 15){
             return next(errHandler(400, "Username must be between 7 and 15 characters long"))
         }
         if(req.body.username.includes(" ")){
@@ -28,8 +29,9 @@ export const update= async(req,res,next) =>{
         if(req.body.username !== req.body.username.toLowerCase()){
             return next(errHandler(400, "Username must be lowercase"))
         }
-        if(req.body.username.match(/^[a-zA-Z0-9]+$/)){
-            return next(errHandler(400, "Username only contains letters and numbers"))
+    
+        if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
+            return next(errHandler(400, "Username must contain only letters and numbers"))
         }
         try{
             const updatedUser = await User.findByIdAndUpdate(req.params.id, {
@@ -51,4 +53,3 @@ export const update= async(req,res,next) =>{
 
         }
     }
-
