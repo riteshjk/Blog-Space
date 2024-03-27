@@ -2,13 +2,11 @@ import bcryptjs from "bcryptjs"
 import User from "../models/user.model.js"
 import { errHandler } from "../utils/err.js"
 export const test =(req,res) =>{
-
     res.send("test")
 }
 
 
 export const update= async(req,res,next) =>{
-    // console.log(req.user)
     if(req.user.id != req.params.id){
         return next(errHandler(403, "You can update only your account"))
     }
@@ -33,6 +31,7 @@ export const update= async(req,res,next) =>{
         if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
             return next(errHandler(400, "Username must contain only letters and numbers"))
         }
+    }
         try{
             const updatedUser = await User.findByIdAndUpdate(req.params.id, {
                 $set : {
@@ -52,4 +51,4 @@ export const update= async(req,res,next) =>{
         }
 
         }
-    }
+    

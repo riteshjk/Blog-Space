@@ -15,15 +15,17 @@ import { useDispatch } from "react-redux";
 
 
  const DashProfile = () => {
-  const { currentUser,loading, error } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUplaodProgress] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
+  const [imageFileUploading, setImageFileUploading] = useState(false);
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
+  const [updateUserFailure, setUpdateUserFailure] = useState(null);
+  const [formData, setFormData] = useState({});
   const filePickerRef = useRef();
   const dispatch = useDispatch();
-  const [formData, setFormData] = useState({});
-
   // const {currentUser} = useSelector((state) => state.user);
   // console.log(currentUser,"ritesh")
 
@@ -56,6 +58,7 @@ import { useDispatch } from "react-redux";
     //   }
     // }
     // setImageUploading(true);
+    setImageFileUploading(true);
      setImageFileUploadError(null);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
@@ -75,11 +78,13 @@ import { useDispatch } from "react-redux";
         setImageFileUplaodProgress(null);
         setImageFile(null);
         setImageFileUrl(null);
+        setImageFileUploading(false)
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
           setFormData({...formData, profilePic: downloadURL });
+          setImageFileUploading(false)
         });
       }
     );
@@ -89,19 +94,24 @@ import { useDispatch } from "react-redux";
      setFormData({ ...formData, [e.target.id]: e.target.value });
 
   };
-  
+  // console.log(formData)
   const handleSubmit = async (e) => {
      e.preventDefault();
-    
+     setUpdateUserSuccess(null)
+     setUpdateUserFailure(null)
      if (Object.keys(formData).length === 0) {
+      setUpdateUserFailure("No Chnages Made")
        return;
-     }  
+     } 
+     if(imageFileUploading){
+      setUpdateUserFailure("Image Uploading...")
+      return
+     } 
 
-     
-  
      try {
        dispatch(updateStart());
-      const res = await fetch(`/api/users/update/${currentUser.userPresent._id}`, {
+       console.log(currentUser,"hi")
+      const res = await fetch(`/api/users/update/${currentUser._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -110,16 +120,19 @@ import { useDispatch } from "react-redux";
       });
 
        const data = await res.json();
-       console.log(data,"ritesh")
       
        if (!res.ok) {
         
          dispatch(updateFailure(data.message));
+         setUpdateUserFailure(data.message)
+         
         
      } else {
+
         dispatch(updateSuccess(data));
-      }
-    } 
+        setUpdateUserSuccess("User's Profile updated successfully")
+     }
+  }
     catch (error) {
       
       dispatch(updateFailure(error.message));
@@ -164,7 +177,7 @@ import { useDispatch } from "react-redux";
             />
           )}
           <img
-            src={imageFileUrl || currentUser.userPresent.profilePic}
+            src={imageFileUrl || currentUser.profilePic}
             alt=""
             className={`rounded-full w-full h-full object-cover border-8 border-[lightgray]
             ${
@@ -182,14 +195,14 @@ import { useDispatch } from "react-redux";
           type="text"
           id="username"
           placeholder="username"
-          defaultValue={currentUser.userPresent.username}
+          defaultValue={currentUser.username}
           onChange={handleChange}
         />
         <TextInput
           type="email"
           id="email"
           placeholder="email"
-          defaultValue={currentUser.userPresent.email}
+          defaultValue={currentUser.email}
           onChange={handleChange}
         />
         <TextInput
@@ -226,7 +239,12 @@ import { useDispatch } from "react-redux";
           Sign Out
         </span>
       </div>
-  
+  {
+    updateUserSuccess && <Alert color="success" className="mt-3">{updateUserSuccess}</Alert>
+  }
+  {
+    updateUserFailure && <Alert color="failure" className="mt-3">{updateUserFailure}</Alert>
+  }
     </div>
   );
 };

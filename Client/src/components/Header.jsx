@@ -42,11 +42,11 @@ const Header = () => {
           </Button>
         {
           currentUser ? (
-            <Dropdown arrowIcon={false} inline label={<Avatar img={currentUser?.userPresent?.profilePic} rounded/>}>
+            <Dropdown arrowIcon={false} inline label={<Avatar img={currentUser?.profilePic} rounded/>}>
 
                 <Dropdown.Header>
-                  <span className="block text-sm">@{currentUser?.userPresent?.username}</span>
-                  <span className="block text-sm font-medium truncate">@{currentUser?.userPresent?.email}</span>
+                  <span className="block text-sm">@{currentUser?.username}</span>
+                  <span className="block text-sm font-medium truncate">@{currentUser?.email}</span>
                 </Dropdown.Header>
                 
                   <Link to="/dashboard?tab=profile">

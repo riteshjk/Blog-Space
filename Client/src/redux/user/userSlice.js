@@ -23,7 +23,7 @@ const userSlice = createSlice({
             state.loading = false,
             state.error  = null
         },
-        updateStart:()=>{
+        updateStart:(state)=>{
             state.loading = true,
             state.error = null
         },
