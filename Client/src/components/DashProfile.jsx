@@ -10,12 +10,14 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { updateStart, updateSuccess, updateFailure } from "../redux/user/userSlice";
+import { updateStart, updateSuccess, updateFailure,deleteUserStart,deleteUserSuccess,deleteUserFailure,signoutSuccess } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
+import {HiOutlineExclamationCircle} from 'react-icons/hi';
+import { useNavigate } from "react-router-dom";
 
 
  const DashProfile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser,error } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUplaodProgress] = useState(null);
@@ -24,10 +26,12 @@ import { useDispatch } from "react-redux";
   const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
   const [updateUserFailure, setUpdateUserFailure] = useState(null);
   const [formData, setFormData] = useState({});
+  const [showModal, setShowModal] = useState(false);
   const filePickerRef = useRef();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   // const {currentUser} = useSelector((state) => state.user);
-  // console.log(currentUser,"ritesh")
+  //  console.log(currentUser,"ritesh")
 
 //   console.log("====================================");
   const handleImageChange = (e) => {
@@ -139,6 +143,43 @@ import { useDispatch } from "react-redux";
     }
   };
 
+  const handleDeleteUser = async () => {
+    setShowModal(false);
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/users/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(deleteUserFailure(data.message));
+      } else {
+        dispatch(deleteUserSuccess());
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+
+  const handleSignout =async () =>{
+     console.log("hi")
+    try{
+      const res=  await fetch("/api/users/signout",{
+        method: "POST",
+      })
+      const data = await res.json();
+      if(!res.ok){
+        console.log(data.message)
+      }else{
+        dispatch(signoutSuccess())
+        navigate("/signin")
+      }
+
+    }catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
@@ -177,7 +218,7 @@ import { useDispatch } from "react-redux";
             />
           )}
           <img
-            src={imageFileUrl || currentUser.profilePic}
+            src={imageFileUrl || currentUser?.profilePic}
             alt=""
             className={`rounded-full w-full h-full object-cover border-8 border-[lightgray]
             ${
@@ -232,10 +273,10 @@ import { useDispatch } from "react-redux";
         )} */}
       </form>
       <div className="text-red-500 flex justify-between mt-5">
-        <span  className="cursor-pointer">
+        <span onClick={() => setShowModal(true)} className="cursor-pointer">
           Delete Account
         </span>
-        <span  className="cursor-pointer">
+        <span onClick={handleSignout} className="cursor-pointer">
           Sign Out
         </span>
       </div>
@@ -245,6 +286,39 @@ import { useDispatch } from "react-redux";
   {
     updateUserFailure && <Alert color="failure" className="mt-3">{updateUserFailure}</Alert>
   }
+   {error && (
+        <Alert color="failure" className="mt-5">
+          {error}
+        </Alert>
+      )}
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle
+              className="h-14 w-14 text-grey-400
+             dark:text-grey-200 mb-4 mx-auto
+            "
+            />
+            <h3 className="mb-5 text-lg text-grey-500 dark:text-grey-400">
+              Are you sure you want to delete your account?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleDeleteUser}>
+                Yes, I'm sure
+              </Button>
+              <Button color="grey" onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

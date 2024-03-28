@@ -63,30 +63,32 @@ export const userLogin = async (req, res, next) => {
     const token = jwt.sign(
       {
         id: validUser._id,
-        isAdmin: validUser.isAdmin,
+        
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      process.env.JWT_SECRET
     );
-
+    console.log("access",token)
     const { password: pass, ...rest } = validUser._doc;
 
     // Set token as a cookie and send user data in response
     res
-      .status(200)
-      .cookie("access_token", token, {
-        httpOnly: true,
-      })
-      .json(rest);
+    .status(200)
+    .cookie("access_token", token, {
+      httpOnly: true,
+    })
+      .json({...rest,token});
   } catch (error) {
     // Handle errors
     next(error);
   }
 };
 
-export const googleOAuth = async (req, res, next) => {
-  const { email, name, googlePhotoUrl } = req.body;
 
+
+
+export const googleOAuth = async (req, res, next) => {
+  const { email, name, image } = req.body;
+   console.log(image);
   try {
     const user = await User.findOne({ email });
     if (user) {
@@ -112,7 +114,7 @@ export const googleOAuth = async (req, res, next) => {
           Math.random().toString(9).slice(-4),
         email,
         password: hashedPassword,
-        profilePicture: googlePhotoUrl,
+        profilePic:image,
       });
 
       await newUser.save();

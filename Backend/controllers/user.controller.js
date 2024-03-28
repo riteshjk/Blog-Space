@@ -7,6 +7,8 @@ export const test =(req,res) =>{
 
 
 export const update= async(req,res,next) =>{
+    console.log(req.user,"sandeep");
+    console.log(req.params.id,"ritesh");
     if(req.user.id != req.params.id){
         return next(errHandler(403, "You can update only your account"))
     }
@@ -52,3 +54,27 @@ export const update= async(req,res,next) =>{
 
         }
     
+export const deleteUser = async(req,res,next) =>{
+    if(req.user.id != req.params.id){
+        return next(errHandler(403, "You can update only your account"))
+    }
+
+    try{
+
+        await User.findByIdAndDelete(req.params.id)
+        res.status(200).send("User has been deleted")
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+export const signoutUser = async(req,res,next) =>{
+try{
+    res.clearCookie("access_token")
+    res.status(200).send("User has been signed out")
+}
+catch(err){
+    next(err)
+}
+}
