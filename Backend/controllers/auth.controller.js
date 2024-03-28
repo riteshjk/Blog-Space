@@ -36,38 +36,37 @@ export const userSignup = async (req, res, next) => {
 
 export const userLogin = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email);
+  
+  if (!email || !password || email === "" || password === "") {
+    return next(errHandler(400, "All fields are required"));
+  }
 
   try {
     // Check if email and password are provided
-    if (!email || !password || email.trim() === "" || password.trim() === "") {
-      throw errHandler(400, "All fields are required");
-    }
-
+    
     // Find user by email
     const validUser = await User.findOne({ email });
-    console.log("user", validUser);
+    //console.log("user", validUser);
     // If user not found, return error
     if (!validUser) {
-      throw errHandler(404, "User not found");
+     return next(errHandler(404, "User not found"));
     }
 
     // Check if password is valid
     const validPassword = bcryptjs.compareSync(password, validUser.password);
 
     if (!validPassword) {
-      throw errHandler(400, "Invalid password");
+      return next(errHandler(400, "Invalid password"));
     }
 
     // Generate JWT token
     const token = jwt.sign(
       {
         id: validUser._id,
-        
       },
       process.env.JWT_SECRET
     );
-    console.log("access",token)
+    
     const { password: pass, ...rest } = validUser._doc;
 
     // Set token as a cookie and send user data in response
@@ -76,7 +75,12 @@ export const userLogin = async (req, res, next) => {
     .cookie("access_token", token, {
       httpOnly: true,
     })
-      .json({...rest,token});
+    .status(200)
+    .send({
+      ...rest,
+      token,
+    })
+    .json(rest);
   } catch (error) {
     // Handle errors
     next(error);
@@ -88,12 +92,12 @@ export const userLogin = async (req, res, next) => {
 
 export const googleOAuth = async (req, res, next) => {
   const { email, name, image } = req.body;
-   console.log(image);
+  //  console.log(image);
   try {
     const user = await User.findOne({ email });
     if (user) {
       const token = jwt.sign(
-        { id: user._id, isAdmin: user.isAdmin },
+        { id: user._id },
         process.env.JWT_SECRET
       );
       const { password, ...rest } = user._doc;
@@ -119,7 +123,7 @@ export const googleOAuth = async (req, res, next) => {
 
       await newUser.save();
       const token = jwt.sign(
-        { id: user._id, isAdmin: user.isAdmin },
+        { id: newUser._id},
         process.env.JWT_SECRET
       );
       const { password, ...rest } = newUser._doc;

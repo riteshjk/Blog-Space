@@ -2,58 +2,48 @@ import React from "react";
 import { Link,useNavigate} from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
-import axios from "axios";
-import { loginStart, loginSuccess, loginFailure } from "../redux/user/userSlice";
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth";
 
 
-function SignIn() {
+const SignIn = ()=> {
   const [formData, setFormData] = useState({});
-  // const [errMessage, setErrMessage] = useState(null);
-  // const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  const {loading,error} = useSelector((state) => state.user);
+  const {loading,error:errorMessage} = useSelector((state) => state.user);
 
   const handleChange =(e) =>{
     setFormData({...formData,[e.target.id]:e.target.value})
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginStart());
+    
     if ( !formData.email || !formData.password) {
-      // setErrMessage("Please fill all the fields");
-      // setLoading(false);
-      return dispatch(loginFailure(error || "Please fill all the fields"));
-       // exit the function early if form data is incomplete
+      return dispatch(signInFailure(errorMessage || "Please fill all the fields"));
     }
     
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(response);
-      setFormData({});
+      dispatch(signInStart())
+     const res= await fetch("/api/auth/login",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+     })
+        const data = await res.json();
       
       
-      if (response.status === 200) {
-        // Redirect to sign-in page
-        dispatch(loginSuccess(response.data))
-        navigate("/");
-      } else {
-        dispatch(loginFailure(response.data.message));
-        // setErrMessage("Signup was not successful. Please try again.");
+      if (data.success == false) {
+        dispatch(signInFailure())       
+      } 
+      if(res.ok){
+        dispatch(signInSuccess(data));
+        navigate("/")
       }
     } catch (error) {
-      console.error("Signup failed:", error);
-      dispatch(loginFailure(error));
+      dispatch(signInFailure(error));
     }
   
   };
@@ -110,7 +100,7 @@ function SignIn() {
               </span>
             </div>
             {
-        error && <Alert className="mt-5" color={"failure"}>{error}</Alert>
+        errorMessage && <Alert className="mt-5" color={"failure"}>{errorMessage}</Alert>
       }
           </div>
         </form>

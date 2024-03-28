@@ -1,6 +1,6 @@
 import { Alert, Button, Modal, ModalHeader, TextInput } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import {
@@ -10,14 +10,21 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { updateStart, updateSuccess, updateFailure,deleteUserStart,deleteUserSuccess,deleteUserFailure,signoutSuccess } from "../redux/user/userSlice";
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+  signoutSuccess,
+} from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
-import {HiOutlineExclamationCircle} from 'react-icons/hi';
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
-
- const DashProfile = () => {
-  const { currentUser,error } = useSelector((state) => state.user);
+const DashProfile = () => {
+  const { currentUser, error } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUplaodProgress] = useState(null);
@@ -33,7 +40,7 @@ import { useNavigate } from "react-router-dom";
   // const {currentUser} = useSelector((state) => state.user);
   //  console.log(currentUser,"ritesh")
 
-//   console.log("====================================");
+  //   console.log("====================================");
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
@@ -49,7 +56,6 @@ import { useNavigate } from "react-router-dom";
     }
   }, [imageFile]);
 
-
   const uploadImage = async () => {
     // service firebase.storage {
     //   match /b/{bucket}/o {
@@ -63,7 +69,7 @@ import { useNavigate } from "react-router-dom";
     // }
     // setImageUploading(true);
     setImageFileUploading(true);
-     setImageFileUploadError(null);
+    setImageFileUploadError(null);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
@@ -82,39 +88,38 @@ import { useNavigate } from "react-router-dom";
         setImageFileUplaodProgress(null);
         setImageFile(null);
         setImageFileUrl(null);
-        setImageFileUploading(false)
+        setImageFileUploading(false);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
-          setFormData({...formData, profilePic: downloadURL });
-          setImageFileUploading(false)
+          setFormData({ ...formData, profilePic: downloadURL });
+          setImageFileUploading(false);
         });
       }
     );
   };
 
   const handleChange = (e) => {
-     setFormData({ ...formData, [e.target.id]: e.target.value });
-
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
   // console.log(formData)
   const handleSubmit = async (e) => {
-     e.preventDefault();
-     setUpdateUserSuccess(null)
-     setUpdateUserFailure(null)
-     if (Object.keys(formData).length === 0) {
-      setUpdateUserFailure("No Chnages Made")
-       return;
-     } 
-     if(imageFileUploading){
-      setUpdateUserFailure("Image Uploading...")
-      return
-     } 
+    e.preventDefault();
+    setUpdateUserSuccess(null);
+    setUpdateUserFailure(null);
+    if (Object.keys(formData).length === 0) {
+      setUpdateUserFailure("No Chnages Made");
+      return;
+    }
+    if (imageFileUploading) {
+      setUpdateUserFailure("Image Uploading...");
+      return;
+    }
 
-     try {
-       dispatch(updateStart());
-       console.log(currentUser,"hi")
+    try {
+      dispatch(updateStart());
+      console.log(currentUser, "hi");
       const res = await fetch(`/api/users/update/${currentUser._id}`, {
         method: "PUT",
         headers: {
@@ -123,22 +128,16 @@ import { useNavigate } from "react-router-dom";
         body: JSON.stringify(formData),
       });
 
-       const data = await res.json();
-      
-       if (!res.ok) {
-        
-         dispatch(updateFailure(data.message));
-         setUpdateUserFailure(data.message)
-         
-        
-     } else {
+      const data = await res.json();
 
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserFailure(data.message);
+      } else {
         dispatch(updateSuccess(data));
-        setUpdateUserSuccess("User's Profile updated successfully")
-     }
-  }
-    catch (error) {
-      
+        setUpdateUserSuccess("User's Profile updated successfully");
+      }
+    } catch (error) {
       dispatch(updateFailure(error.message));
     }
   };
@@ -161,24 +160,23 @@ import { useNavigate } from "react-router-dom";
     }
   };
 
-  const handleSignout =async () =>{
-     console.log("hi")
-    try{
-      const res=  await fetch("/api/users/signout",{
+  const handleSignout = async () => {
+    console.log("hi");
+    try {
+      const res = await fetch("/api/users/signout", {
         method: "POST",
-      })
+      });
       const data = await res.json();
-      if(!res.ok){
-        console.log(data.message)
-      }else{
-        dispatch(signoutSuccess())
-        navigate("/signin")
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
+        navigate("/signin");
       }
-
-    }catch(error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
-  }
+  };
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
@@ -250,14 +248,10 @@ import { useNavigate } from "react-router-dom";
           type="password"
           id="password"
           placeholder="password"
-        //   defaultValue={currentUser.password}
+          //   defaultValue={currentUser.password}
           onChange={handleChange}
         />
-        <Button
-          type="submit"
-          gradientDuoTone={"purpleToBlue"}
-          outline
-        >
+        <Button type="submit" gradientDuoTone={"purpleToBlue"} outline>
           Update
         </Button>
         {/* {currentUser.isAdmin && (
@@ -280,13 +274,17 @@ import { useNavigate } from "react-router-dom";
           Sign Out
         </span>
       </div>
-  {
-    updateUserSuccess && <Alert color="success" className="mt-3">{updateUserSuccess}</Alert>
-  }
-  {
-    updateUserFailure && <Alert color="failure" className="mt-3">{updateUserFailure}</Alert>
-  }
-   {error && (
+      {updateUserSuccess && (
+        <Alert color="success" className="mt-3">
+          {updateUserSuccess}
+        </Alert>
+      )}
+      {updateUserFailure && (
+        <Alert color="failure" className="mt-3">
+          {updateUserFailure}
+        </Alert>
+      )}
+      {error && (
         <Alert color="failure" className="mt-5">
           {error}
         </Alert>
@@ -323,4 +321,4 @@ import { useNavigate } from "react-router-dom";
   );
 };
 
-export default DashProfile
+export default DashProfile;

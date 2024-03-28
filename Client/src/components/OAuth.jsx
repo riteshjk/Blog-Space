@@ -4,15 +4,15 @@ import { AiFillGoogleCircle } from 'react-icons/ai';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth"
 import { app } from '../firebase';
 import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../redux/user/userSlice';
+import { signInSuccess } from '../redux/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 
 const OAuth = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-
+    const auth = getAuth(app);
     const handleGoogleAuth = async () => {
-        const auth = getAuth(app);
+        
         const provider = new GoogleAuthProvider();
         provider.setCustomParameters({
             prompt: "select_account"
@@ -20,7 +20,6 @@ const OAuth = () => {
 
         try {
             const result = await signInWithPopup(auth, provider);
-            console.log(result, "hi");
 
             const res = await fetch("/api/auth/google", {
                 method: "POST",
@@ -33,11 +32,10 @@ const OAuth = () => {
                     image: result.user.photoURL
                 })
             });
-             console.log(res,"xyz")
+            //  console.log(res,"xyz")
+            const data = await res.json();
             if (res.ok) {
-                const data = await res.json();
-                console.log(data,"abcd")
-                dispatch(loginSuccess(data));
+                dispatch(signInSuccess(data));
                 navigate("/");
             } else {
                 console.error("Error:", res.statusText);
