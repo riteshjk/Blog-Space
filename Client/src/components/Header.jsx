@@ -4,7 +4,8 @@ import { Link,useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import {FaMoon, FaSun} from "react-icons/fa";
 import { useSelector,useDispatch } from "react-redux";
-import {toggleTheme} from "../redux/theme/themeSlice"
+import {toggleTheme} from "../redux/theme/themeSlice";
+import { signoutSuccess } from "../redux/user/userSlice";
 
 const Header = () => {
     const path = useLocation().pathname;
@@ -12,6 +13,25 @@ const Header = () => {
     const {theme} = useSelector((store) => store.theme);
     const dispatch = useDispatch();
     //  console.log(currentUser,"hi")
+
+    const handleSignout = async () => {
+
+      console.log("hi ritesh");
+      try {
+        const res = await fetch("/api/users/signout", {
+          method: "POST",
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          console.log(data.message);
+        } else {
+          dispatch(signoutSuccess());
+          navigate("/signin");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
   return (
     <div>
       <Navbar className="border-b-2">
@@ -54,7 +74,7 @@ const Header = () => {
                   </Link>
                 
                 <Dropdown.Divider />
-                <Dropdown.Item>Sign Out</Dropdown.Item>
+                <Dropdown.Item onClick={handleSignout}>Sign Out</Dropdown.Item>
               </Dropdown>
           ) : (
             <Link to="/signin"><Button gradientDuoTone={"purpleToBlue"} outline>Sign In</Button></Link>
