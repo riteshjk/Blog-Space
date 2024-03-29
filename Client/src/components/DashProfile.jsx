@@ -21,10 +21,10 @@ import {
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const DashProfile = () => {
-  const { currentUser, error } = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUplaodProgress] = useState(null);
@@ -129,7 +129,7 @@ const DashProfile = () => {
       });
 
       const data = await res.json();
-
+      console.log(data,"tera bap")
       if (!res.ok) {
         dispatch(updateFailure(data.message));
         setUpdateUserFailure(data.message);
@@ -251,10 +251,10 @@ const DashProfile = () => {
           //   defaultValue={currentUser.password}
           onChange={handleChange}
         />
-        <Button type="submit" gradientDuoTone={"purpleToBlue"} outline>
-          Update
+        <Button type="submit" gradientDuoTone={"purpleToBlue"} outline disabled={loading || imageFileUploading}>
+          {loading ? "loading..." : "Update"} 
         </Button>
-        {/* {currentUser.isAdmin && (
+        {currentUser.isAdmin && (
           <Link to={"/create-post"}>
             <Button
               type="button"
@@ -264,7 +264,7 @@ const DashProfile = () => {
               Create a Post
             </Button>
           </Link>
-        )} */}
+        )}
       </form>
       <div className="text-red-500 flex justify-between mt-5">
         <span onClick={() => setShowModal(true)} className="cursor-pointer">

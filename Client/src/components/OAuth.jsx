@@ -32,8 +32,9 @@ const OAuth = () => {
                     image: result.user.photoURL
                 })
             });
-            //  console.log(res,"xyz")
+            
             const data = await res.json();
+            //  console.log(data,"xyz")
             if (res.ok) {
                 dispatch(signInSuccess(data));
                 navigate("/");

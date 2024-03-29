@@ -12,7 +12,7 @@ const Header = () => {
     const {currentUser} = useSelector((store) => store.user);
     const {theme} = useSelector((store) => store.theme);
     const dispatch = useDispatch();
-    //  console.log(currentUser,"hi")
+      console.log(currentUser,"hi")
 
     const handleSignout = async () => {
 
@@ -26,7 +26,6 @@ const Header = () => {
           console.log(data.message);
         } else {
           dispatch(signoutSuccess());
-          navigate("/signin");
         }
       } catch (error) {
         console.log(error);
@@ -62,7 +61,9 @@ const Header = () => {
           </Button>
         {
           currentUser ? (
-            <Dropdown arrowIcon={false} inline label={<Avatar img={currentUser?.profilePic} rounded/>}>
+            <Dropdown arrowIcon={false} inline label={<Avatar img={currentUser?.
+              profilePic
+              } rounded/>}>
 
                 <Dropdown.Header>
                   <span className="block text-sm">@{currentUser?.username}</span>
