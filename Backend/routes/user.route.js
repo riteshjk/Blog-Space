@@ -10,4 +10,5 @@ router.delete("/delete/:id",verifyToken,deleteUser)
 router.post("/signout", signoutUser)
 router.get("/getusers",verifyToken,getUser)
 
+
 export default router

@@ -54,22 +54,23 @@ const DashUsers = () => {
   }
 
    const handleDeleteuser = async() =>{
-//     setShowModal(false)
-//     // console.log(userIdToDelete,"ritesh"),
-//     // console.log(currentUser._id,"devi")
-//     try{
-//         const res = await fetch(`/api/users/deleteuser/${userIdToDelete}/${currentUser._id}`,{
-//             method:"DELETE",
-//         })
-//         const data = await res.json();
-//         if(res.ok){
-//             setusers(prevusers => prevusers.filter(user => user._id !== userIdToDelete));
-//         } else {
-//             console.log(data.message)
-//         }
-//     } catch(error){
-//         console.log(error)
-//     }
+    setShowModal(false)
+    // console.log(userIdToDelete,"ritesh"),
+    // console.log(currentUser._id,"devi")
+    try{
+        const res = await fetch(`/api/users/delete/${userIdToDelete}`,{
+            method:"DELETE",
+        })
+        const data = await res.json();
+        if(res.ok){
+            setusers(prevusers => prevusers.filter(user => user._id !== userIdToDelete));
+            setShowModal(false)
+        } else {
+            console.log(data.message)
+        }
+    } catch(error){
+        console.log(error)
+    }
  }
   return (
     <div className="w-full table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-gray-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-600">

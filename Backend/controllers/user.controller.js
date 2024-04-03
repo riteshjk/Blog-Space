@@ -54,7 +54,7 @@ export const update= async(req,res,next) =>{
         }
     
 export const deleteUser = async(req,res,next) =>{
-    if(req.user.id != req.params.id){
+    if(!req.user.isAdmin && req.user.id != req.params.id){
         return next(errHandler(403, "You can update only your account"))
     }
 
