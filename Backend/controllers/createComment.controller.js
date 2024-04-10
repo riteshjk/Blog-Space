@@ -73,3 +73,17 @@ export const getPostComments = async (req, res, next) => {
         next(errHandler)
     }
   }
+
+  export const deleteComment = async(req,res,next) =>{
+    try{
+      const comment = await Comment.findById(req.params.commentId);
+      if(!comment) return next(errHandler(404, "Comment not found"))
+      if(req.user.id !== comment.userId && !req.user.isAdmin) return next(errHandler(403, "You are not allowed to delete this comment"))
+      await Comment.findByIdAndDelete(req.params.commentId);
+      res.status(200).json("Comment has been deleted");
+      
+    }
+    catch(errHandler){
+        next(errHandler)
+    }
+  }
