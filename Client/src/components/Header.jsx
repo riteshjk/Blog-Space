@@ -12,7 +12,7 @@ const Header = () => {
     const {currentUser} = useSelector((store) => store.user);
     const {theme} = useSelector((store) => store.theme);
     const dispatch = useDispatch();
-      console.log(currentUser,"hi")
+      // console.log(currentUser,"hi")
 
     const handleSignout = async () => {
 
