@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon api/index.js",
     "start": "node api/index.js",
-    "build": "npm install && npm install --prefix vite-project && npm run build --prefix vite-project"
+    "build": "npm install && npm install --prefix Client && npm run build --prefix Client"
   },
   "author": "",
   "license": "ISC",
