@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row gap-4">
           <span className="text-lg font-semibold">Connect with me:</span>
           <a
-            href="https://github.com/your-github"
+            href="https://github.com/riteshjk"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2"
@@ -17,17 +17,9 @@ const Footer = () => {
             <FaGithub />
             GitHub
           </a>
+         
           <a
-            href="https://twitter.com/your-twitter"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2"
-          >
-            <FaTwitter />
-            Twitter
-          </a>
-          <a
-            href="https://linkedin.com/in/your-linkedin"
+            href="https://www.linkedin.com/in/ritesh-kamthe-91562416b/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2"
@@ -41,7 +33,7 @@ const Footer = () => {
           <p>
             Made with ❤️ by{" "}
             <a
-              href="https://your-portfolio.com"
+              href="https://riteshjk.github.io/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-500"
