@@ -11,7 +11,7 @@ export const CallToAction = () => {
           className="rounded-t-xl rounded-bl-none rounded-tr-none"
           gradientDuoTone={"purpleToPink"}
         >
-          <a href="https://my-portfolio-delta-neon.vercel.app/" target="_blank">
+          <a href="https://riteshjk.github.io/" target="_blank">
             Learn more about the developer
           </a>
         </Button>
