@@ -12,9 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({
-    origin:"*"
-}))
+app.use(cors())
 
 const __dirname = path.resolve();
 
