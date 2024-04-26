@@ -17,7 +17,7 @@ const CommentSection = ({postId}) => {
   const [commentToDelete, setCommentToDelete] = useState(null);
     const navigate = useNavigate()
     console.log(comments,"hi")
-    //  console.log(currentUser,"name")
+    
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
 
