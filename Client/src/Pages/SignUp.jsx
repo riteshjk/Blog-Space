@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
-import axios from "axios";
 import OAuth from "../components/OAuth";
 
 function SignUp() {
@@ -26,28 +25,25 @@ function SignUp() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/signup",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      setLoading(true);
+      setErrMessage(false)
+      const res = await fetch("api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
 
-      console.log(response);
-      setFormData({});
-      setLoading(false);
-
-      if (response.status === 200) {
+      if (res.ok) {
         navigate("/signin");
-      } else {
-        setErrMessage("Signup was not successful. Please try again.");
       }
+      if (data.success === false) {
+        setLoading(false);
+        return setErrMessage(data.message);
+      }
+      setLoading(false);
     } catch (error) {
-      console.error("Signup failed:", error);
-      setErrMessage("An error occurred while signing up. Please try again later.");
+      setErrMessage(error.message);
       setLoading(false);
     }
   };
